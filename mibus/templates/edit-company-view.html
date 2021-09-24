@@ -1,0 +1,240 @@
+{% extends "main-navbar.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .form-container{
+        font-family: Helvetica;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        margin: auto;
+    }
+    .form-container p{
+        margin: 0;
+    }
+    .form-container input {
+        background-color: #FBFAFB;
+        font-size: 16px;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    .form-container input[type="submit"] {
+        font-weight: bold;
+        font-family: Helvetica;
+        font-size: 20px;
+        color: #fff;
+        background-color: #4CAF50;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid rgb(0, 90, 23);
+        border-radius: 8px;
+    }
+    .form_error{
+        padding: 8px 0px;
+        color: #b61827; 
+    }
+    #succes-message{
+        text-align: center;
+        color: #30b618;
+        padding: 15px;
+    }
+    .message-container{
+        padding: 15px 0px;
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .success-message-container{
+        background-color: #ebffe8;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #30b618;
+        border-radius: 8px;
+    }
+    .form_error input{
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .form-container input:focus {
+        background-color: white;
+        border: 1px solid rgb(146, 146, 146);
+        outline: none;
+        border-radius: 8px;
+    }
+    #checkbox{
+        height: 20px;
+        width: 20px;
+    }
+    #messages{
+        text-align: center;
+        color: #b61827
+    }
+    .for-message{
+        padding: 15px 0px 0px;
+    }
+    .input-containers{
+        margin: 0px;
+        padding: 6px 10px;
+        display: flex; 
+        align-items: center;
+        justify-content:space-between; 
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background-color: #FBFAFB;
+    }
+    .form{
+        padding: 8px 0px;
+    }
+</style>
+<div class="form-container">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="padding: 100px">
+            <h1>
+                Editar Empresa
+            </h1>
+            {% if name_error %}
+                <div class="form_error">
+                    <p>Nombre de la Empresa:</p>
+                    <input type="text" name="username" value="{{company.username}}">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Nombre de la Empresa:</p>
+                    <input type="text" name="username" value="{{company.username}}">
+                </div>
+            {% endif %}
+            {% if email_error %}
+                <div class="form-error">
+                    <p>Nombre de la Empresa:</p>
+                    <input type="text" name="username" value="{{user.email}}">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Email:</p>
+                    <input type="text" name="email" value="{{user.email}}">
+                </div>
+            {% endif %}  
+            {% if password_error %}
+                <div class="form_error">
+                    <p>Nueva Contraseña:</p>
+                    <input type="password" name="password1">
+                </div>
+                <div class="form_error">
+                    <p>Confirmar Contraseña:</p>
+                    <input type="password" name="password2">
+                </div>  
+            {% else %}                
+                <div class="form">
+                    <p>Nueva Contraseña:</p>
+                    <input type="password" name="password1">
+                </div>
+                <div class="form">
+                    <p>Confirmar Contraseña:</p>
+                    <input type="password" name="password2">
+                </div>  
+            {% endif %}
+            {% if passwordlast_error %}
+                <div class="form_error">
+                    <p>Contraseña:</p>
+                    <input type="password" name="password">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Contraseña:</p>
+                    <input type="password" name="password">
+                </div>
+            {% endif %}
+            <div class="form">
+                <div class="input-containers">
+                    <p style="padding-right:15px; margin: 0px;">Color:</p>
+                    <input type="text" style="width:100%; margin: 0px 20px" name="color" value="{{company.color}}">
+                    <div class="color-picker"></div>
+                </div>
+            </div>
+            <div class="form">
+                <input id="submit"type="submit"  name="Submit" value="Guardar">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="for-message">
+                            <div class="message-container">
+                                <p id="messages">{{message}}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="for-message">
+                            <div class="success-message-container">
+                                <p id="succes-message">{{message}}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="form">
+                <p><a href="/main-company" style="color:#3898d3;" >Volver a la pagina principal</a></p>
+            </div>
+        </div>
+    </form>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+<script>
+    var color = document.getElementsByName('color')[0];
+    const pickr = Pickr.create({
+        el: '.color-picker',
+        theme: 'classic',
+        default: color.value, // or 'monolith', or 'nano'
+
+        swatches: [
+            'rgba(244, 67, 54, 1)',
+            'rgba(233, 30, 99, 0.95)',
+            'rgba(156, 39, 176, 0.9)',
+            'rgba(103, 58, 183, 0.85)',
+            'rgba(63, 81, 181, 0.8)',
+            'rgba(33, 150, 243, 0.75)',
+            'rgba(3, 169, 244, 0.7)',
+            'rgba(0, 188, 212, 0.7)',
+            'rgba(0, 150, 136, 0.75)',
+            'rgba(76, 175, 80, 0.8)',
+            'rgba(139, 195, 74, 0.85)',
+            'rgba(205, 220, 57, 0.9)',
+            'rgba(255, 235, 59, 0.95)',
+            'rgba(255, 193, 7, 1)'
+        ],
+
+        components: {
+
+            // Main components
+            preview: true,
+            opacity: true,
+            hue: true,
+
+            // Input / output Options
+            interaction: {
+                hex: true,
+                rgba: true,
+                input: true,
+                clear: true,
+                save: true
+            }
+        }
+    });
+    pickr.on('save', (colorSelected, instance) => {
+        return color.value= colorSelected.toHEXA().toString();
+    });
+</script>
+{% endblock content %}

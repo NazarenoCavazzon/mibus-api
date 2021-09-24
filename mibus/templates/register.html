@@ -1,0 +1,169 @@
+<style>
+    .registro input{
+        background-color: #FBFAFB;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    .registro input:focus{
+        background-color: white;
+        border: 1px solid rgb(146, 146, 146);
+        outline: none;
+        border-radius: 8px;
+    }
+    .buttonHolder{
+        padding: 10px 0px;
+    }
+    .buttonHolder input{ 
+        text-align: center;
+        background-color: #00B050;
+        color: white;
+        font-size: 20px;
+        font-family: Helvetica;
+    }
+    .buttonHolder input:focus{ 
+        text-align: center;
+        background-color: #00B050;
+        color: white;
+        font-size: 20px;
+        font-family: Helvetica;
+    }
+    .message-container{
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .success-message-container{
+        background-color: #ebffe8;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #30b618;
+        border-radius: 8px;
+    }
+    #messages{
+        text-align: center;
+        color: #b61827
+    }
+    #succes-message{
+        text-align: center;
+        color: #30b618
+    }
+    .form_error{
+        color: #b61827;
+    }
+    #password1{
+        background-color: #FDF4F7;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    #password2{
+        background-color: #FDF4F7;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    #username{
+        background-color: #FDF4F7;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .for-message{
+        padding: 5px 0px;
+    }
+    
+</style>
+<div class="registro" style="display: flex; justify-content:center; padding: 20px 0px">
+    <a href="/"><img src="https://i.imgur.com/idqzMn6.png" alt="Logo" style="width:350px"></a>
+    <div style="position: absolute;top: 50%;transform: translateY(-50%); font-family:'Helvetica'">
+        <h1 style="text-align:center">Registro</h1>
+        <form method="POST" action="">
+            {% csrf_token %}
+            {% if username_error %}
+                <div style="padding-bottom: 8px" class="form_error">
+                    <p style="margin:5px 0px;">Usuario</p>
+                    <input type="text" name="username" value="{{data.username}}" id="username" autofocus required id="id_username" class="form-control">
+                </div>
+            {% else %}
+                <div style="padding-bottom: 8px">
+                    <p style="margin:5px 0px;">Usuario</p>
+                    <input type="text" name="username" value="{{data.username}}" autofocus required id="id_username" class="form-control">
+                </div>
+            {% endif %}
+            <div style="padding-bottom: 8px">
+                <p style="margin:5px 0px;">Correo Electronico</p>
+                <input type="email" name="email" value="{{data.email}}" autofocus required id="id_email" class="form-control">
+            </div>
+            {% if password_error %}
+                <div style="padding-bottom: 8px" class="form_error">
+                    <p style="margin:5px 0px;">Contraseña</p>
+                    <input type="password" name="password1" id="password1" autofocus required id="id_password1" class="form-control">
+                </div>
+                <div style="padding-bottom: 8px" class="form_error">
+                    <p style="margin:5px 0px;">Confirmar Contraseña</p>
+                    <input type="password" name="password2" id="password2" autofocus required id="id_password2" class="form-control">
+                </div>
+            {% else %}
+                <div style="padding-bottom: 8px">
+                    <p style="margin:5px 0px;">Contraseña</p>
+                    <input type="password" name="password1" autofocus required id="id_password1" class="form-control">
+                </div>
+                <div style="padding-bottom: 8px">
+                    <p style="margin:5px 0px;">Confirmar Contraseña</p>
+                    <input type="password" name="password2" autofocus required id="id_password2" class="form-control">
+                </div>
+            {% endif %}
+            <div class="buttonHolder">
+                <input type="submit" name="Register" value="Registrarse"/>
+            </div>
+        </form>
+
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="for-message">
+                    <div class="message-container">
+                        <p id="messages">{{message}}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="for-message">
+                    <div class="success-message-container">
+                        <p id="succes-message">{{message}}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <p>¿Ya tenes una cuenta? <a href="login" style="color:#3898d3;" >Entrar</a></p>
+    </div>
+</div>
+<script>
+
+    var form_fields = document.getElementsByTagName('input')
+    form_fields[1].placeholder='Villa_Maria';
+    form_fields[2].placeholder='Ciudad@correo.com';
+    form_fields[3].placeholder='••••••••••';
+    form_fields[4].placeholder='••••••••••';
+
+
+    for (var field in form_fields){	
+    form_fields[field].className += ' form-control'
+    }
+</script>

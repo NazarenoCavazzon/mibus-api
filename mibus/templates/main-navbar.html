@@ -1,0 +1,76 @@
+{% load static %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap');
+    body{
+        margin: 0;
+    }
+    .navbar{
+        width: 100%;
+    }
+    .container{
+        background-color: #00B050;
+        width: 100%;
+        padding: 15px 0px;
+    }
+    .navbar-container{
+        margin: auto;
+        max-width: 1200px;
+    }
+    .navbar-wrapper{
+        justify-content: space-between;
+        display: flex;
+        -webkit-box-pack: justify;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+    .navbar-links{
+        display: flex;
+        position: relative;
+        float: right;
+    }
+    .navbar-links p{
+        padding: 10px 15px;
+        color: #fff;
+        font-size: 1.3em;
+        font-weight: 600;
+        text-decoration: none;
+        font-family: 'Lato', sans-serif;
+    }
+    .navbar-links a{
+        background-color: #fff;
+        color: #00B050; 
+        text-decoration: none; 
+        padding: 10px 20px;
+        border-radius: 10px;
+    }
+    .navbar-logo{
+        width: 170px;
+    }
+    #register{
+        color: white;
+        padding: 15px 30px;
+        background-color: #00B050;
+        border-radius: 20px;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="navbar-container">
+            <nav class="navbar">
+                <div class="navbar-wrapper">
+                    <div>
+                        <a href="/main">
+                            <img src="https://i.imgur.com/8jSPgrZ.png" alt="Logo" loading="lazy" class="navbar-logo">
+                        </a>
+                    </div>
+                    <div class="navbar-links">
+                        <p>Hola, {{ user.username }}!</p>
+                        <p><a href="/logout">Salir</a></p>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>  
+    {% block content %}
+    {% endblock %}
+</body>

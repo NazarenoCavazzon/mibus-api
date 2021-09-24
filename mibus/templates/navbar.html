@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap');
+    .container{
+        width: 100%;
+        max-width: 1200px;
+        margin: auto;
+        padding: 15px 0px;
+    }
+    .navbar-wrapper{
+        justify-content: space-between;
+        display: flex;
+        -webkit-box-pack: justify;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+    .navbar-links{
+        display: block;
+        position: relative;
+        float: right;
+        padding: 20px;
+    }
+    .navbar-links a{
+        padding: 5px 20px;
+        color: #000;
+        font-size: 1.3em;
+        font-weight: 600;
+        text-decoration: none;
+        font-family: 'Lato', sans-serif;
+    }
+    .navbar-logo{
+        width: 170px;
+    }
+    #register{
+        color: white;
+        padding: 15px 30px;
+        background-color: #00B050;
+        border-radius: 20px;
+    }
+</style>
+<body>
+    <nav>
+        <div class="container">
+            <div class="navbar-wrapper">
+                <div>
+                    <a href="">
+                        <img src="https://i.imgur.com/idqzMn6.png" alt="Logo" loading="lazy" class="navbar-logo">
+                    </a>
+                    <div class="navbar-links">
+                        <a href="login">
+                            Producto
+                        </a>
+                        <a href="login">
+                            Mapas
+                        </a>
+                        <a href="login">
+                            Precio
+                        </a>
+                        <a href="login">
+                            Acerca de
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-links">
+                    <a href="login" id="register">
+                        Entrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>
+

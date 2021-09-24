@@ -1,0 +1,156 @@
+{% extends "main-navbar.html" %}
+{% block content %}
+<style>
+    .form-container{
+        font-family: Helvetica;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        margin: auto;
+    }
+    .form-container input {
+        background-color: #FBFAFB;
+        font-size: 16px;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    .form-container input[type="submit"] {
+        font-weight: bold;
+        font-family: Helvetica;
+        font-size: 20px;
+        color: #fff;
+        background-color: #4CAF50;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid rgb(0, 90, 23);
+        border-radius: 8px;
+    }
+    .form_error{
+        color: #b61827;
+        padding: 10px 0px;
+    }
+    #succes-message{
+        text-align: center;
+        color: #30b618
+    }
+    .message-container{
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .success-message-container{
+        background-color: #ebffe8;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #30b618;
+        border-radius: 8px;
+    }
+    .form_error input{
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .form-container input:focus {
+        background-color: white;
+        border: 1px solid rgb(146, 146, 146);
+        outline: none;
+        border-radius: 8px;
+    }
+    #checkbox{
+        height: 20px;
+        width: 20px;
+    }
+    #messages{
+        text-align: center;
+        color: #b61827
+    }
+    .button{
+        width: 100%;
+        background-color:#30b618;
+        text-decoration: none;
+        padding: 10px;
+        font-family: Helvetica;
+        font-size: 20px;
+        color: #fff;
+        border-radius: 15px;
+    }
+    .for-message{
+        padding: 5px 0px;
+    }
+    .form-class p{
+        margin: 0px;
+    }
+    .submit-container{
+        padding: 15px 0px;
+    }
+    .submit-container p{
+        padding: 10px 0px;
+    }
+    .form{
+        padding: 10px 0px;
+    }
+    .for-message{
+        padding: 5px 0px;
+    }
+    #succes-message{
+        text-align: center;
+        color: #30b618
+    }
+    .message-container{
+        padding: 15px 0px;
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .success-message-container{
+        padding: 15px 0px;
+        background-color: #ebffe8;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #30b618;
+        border-radius: 8px;
+    }
+</style>
+<div class="form-container">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="padding: 100px" class="form-class">             
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="for-message">
+                        <div class="message-container">
+                            <p id="messages">{{message}}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="for-message">
+                        <div class="success-message-container">
+                            <p id="succes-message">{{message}}</p>
+                        </div>
+                    </div>
+                    <div style="padding-top: 20px; width: 100%; align-items: center; display: flex; text-align: center">
+                        <a href="/companies/{{id}}" class="button">Volver</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </form>
+</div>
+{% endblock content %}

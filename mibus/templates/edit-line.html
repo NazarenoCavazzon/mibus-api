@@ -1,0 +1,264 @@
+{% extends "main-navbar.html" %}
+{% block content %}
+<style>
+    .form-container{
+        font-family: Helvetica;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        margin: auto;
+    }
+    .form-container input {
+        background-color: #FBFAFB;
+        font-size: 16px;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    .form-container input[type="submit"] {
+        font-weight: bold;
+        font-family: Helvetica;
+        font-size: 20px;
+        color: #fff;
+        background-color: #4CAF50;
+        width: 400px;
+        padding: 10px 10px;
+        align-items: center;
+        position: relative;
+        border: 1px solid rgb(0, 90, 23);
+        border-radius: 8px;
+    }
+    .form_error{
+        color: #b61827;
+        padding: 10px 0px;
+    }
+    #succes-message{
+        text-align: center;
+        color: #30b618
+    }
+    .message-container{
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .success-message-container{
+        background-color: #ebffe8;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #30b618;
+        border-radius: 8px;
+    }
+    .form_error input{
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .form-container input:focus {
+        background-color: white;
+        border: 1px solid rgb(146, 146, 146);
+        outline: none;
+        border-radius: 8px;
+    }
+    #checkbox{
+        height: 20px;
+        width: 20px;
+    }
+    #messages{
+        text-align: center;
+        color: #b61827
+    }
+    .for-message{
+        padding: 5px 0px;
+    }
+    .form-class p{
+        margin: 0px;
+    }
+    .submit-container{
+        padding: 15px 0px;
+    }
+    .submit-container p{
+        padding: 10px 0px;
+    }
+    .form{
+        padding: 10px 0px;
+    }
+    .for-message{
+        padding: 5px 0px;
+    }
+    #succes-message{
+        text-align: center;
+        color: #30b618
+    }
+    .message-container{
+        padding: 15px 0px;
+        background-color: #FDF4F7;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #b61827;
+        border-radius: 8px;
+    }
+    .success-message-container{
+        padding: 15px 0px;
+        background-color: #ebffe8;
+        width: 400px;
+        align-items: center;
+        position: relative;
+        border: 1px solid #30b618;
+        border-radius: 8px;
+    }
+    select {
+        -webkit-appearance:none;
+        -moz-appearance:none;
+        -ms-appearance:none;
+        appearance:none;
+        outline:0;
+        box-shadow:none;
+        border:0!important;
+        background: #FBFAFB;
+        background-image: none;
+        flex: 1;
+        padding: 0 .5em;
+        color:#000;
+        cursor:pointer;
+        font-size: 1em;
+        font-family: 'Open Sans', sans-serif;
+    }
+    select::-ms-expand {
+        padding: 150px;
+        display: none;
+    }
+    .select {
+        border: 1px solid #ccc;
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 2.5em;
+        line-height: 3;
+        background: #FBFAFB;
+        overflow: hidden;
+        border-radius: .25em;
+    }
+    .select::after {
+        content: '\25BC';
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0 1em;
+        background: #e6e6e6;
+        cursor:pointer;
+        pointer-events:none;
+        transition:.25s all ease;
+    }
+</style>
+<div class="form-container">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="padding: 100px" class="form-class">
+            <h1>
+                Editar Linea
+            </h1>
+            <div class="form">
+                <p>Nombre:</p>
+                <input type="text" name="name" value="{{line.name}}">
+            </div>
+            <div class="form">
+                <p>Status:</p>
+                {% if line.status %}
+                    <div class="select">
+                        <select name="status">
+                            <option value="false">Suspendida</option>
+                            <option value="true" selected>Operativa</option>
+                        </select>
+                    </div>
+                {% else %}
+                    <div class="select">
+                        <select name="status">
+                            <option value="false" selected>Suspendida</option>
+                            <option value="true">Operativa</option>
+                        </select>
+                    </div>
+                {% endif %}
+            </div>
+            {% if round_trip_error %}
+                <div class="form_error">
+                    <p>Recorrido de Ida:</p>
+                    <input type="file" name="round-trip" accept=".kml">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Recorrido de Ida:</p>
+                    <input type="file" name="round-trip" accept=".kml">
+                </div>
+            {% endif %}
+            {% if return_trip_error %}
+                <div class="form_error">
+                    <p>Recorrido de Vuelta:</p>
+                    <input type="file" name="return-trip" accept=".kml">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Recorrido de Vuelta:</p>
+                    <input type="file" name="return-trip" accept=".kml">
+                </div>
+            {% endif %}
+            {% if special_round_trip_error %}
+                <div class="form_error">
+                    <p>Recorrido Especial Ida:</p>
+                    <input type="file" name="special-round-trip" accept=".kml">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Recorrido Especial:</p>
+                    <input type="file" name="special-round-trip" accept=".kml">
+                </div>
+            {% endif %}
+            {% if special_round_trip_error %}
+                <div class="form_error">
+                    <p>Recorrido Especial Vuelta:</p>
+                    <input type="file" name="special-return-trip" accept=".kml">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Recorrido Especial:</p>
+                    <input type="file" name="special-return-trip" accept=".kml">
+                </div>
+            {% endif %}
+            <div class="form">
+                <p>Horarios:</p>
+                <input type="file" name="excel" accept=".xslx">
+            </div>
+                          
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="for-message">
+                        <div class="message-container">
+                            <p id="messages">{{message}}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="for-message">
+                        <div class="success-message-container">
+                            <p id="succes-message">{{message}}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="submit-container">
+                <input id="submit" type="submit" name="Submit" value="Guardar">
+                <p><a href="/cities/editlines/{{company.id}}{{city.id}}" style="color:#3898d3;">Volver a la pagina de Lineas</a></p>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
