@@ -5,11 +5,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from citymngmt.models import City, Company, ClientUser, CompanyRelations, Line, CitySession
+from citymngmt.models import City, Company, ClientUser, CompanyRelations, Line, CitySession, BusStops
 from validate_email import validate_email
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from .modules.extractors import extractLineRoute, extractBusStops
+from .modules.extractors import extractLineRoute, extractBusStops, extractAndUpdate
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import CitySerializer, BusStopsSerializer, CompanySerializer, CompanyRelationsSerializer, LinesSerializer
 
 def closeSession(request):
     from ipware import get_client_ip
@@ -554,7 +557,7 @@ def edit_cities_lines_view(request, relation_id):
             return redirect('/main')
         _company = Company.objects.get(user_id=id)
         _relations = CompanyRelations.objects.filter(company_id=_company.id)
-        _lines = Line.objects.filter(city_id=_city.id, company_id=_company.id)
+        _lines = Line.objects.filter(relation_id=_relation.id)
         context = {'company': _company, 'city':_city, 'user': _user,'lines': _lines, 'has_lines': False, 'relation': _relation}
         if len(_lines) > 0:
             context['has_lines'] = True
@@ -570,7 +573,7 @@ def add_lines_view(request, relation_id):
         id = request.user.id
         _city = City.objects.get(id=_relation.city_id)
         _clientUser = ClientUser.objects.get(user_id=id)
-        _line = Line(company_id=_company.id, city_id=_city.id)
+        _line = Line(relation_id= _relation.id, city_id= _city.id)
         context = {'name_error': False, 'has_error': False, 'city': _city, 'company': _company, 'return_trip_error': False, 'round_trip_error': False, 'special_round_trip_error': False, 'special_return_trip_error': False,'relation': _relation}
         if _clientUser.isCity:
             return redirect('/main')
@@ -649,17 +652,18 @@ def add_lines_view(request, relation_id):
 @login_required(login_url='/login')
 def edit_line_view(request, line_id):
     _line = Line.objects.get(id=line_id)
-    _company = Company.objects.get(id=_line.company_id)
-    _city = City.objects.get(id=_line.city_id)
+    _relation = CompanyRelations.objects.get(id=_line.relation_id)
+    _company = Company.objects.get(id=_relation.company_id)
+    _city = City.objects.get(id=_relation.city_id)
     _user = User.objects.get(id=_company.user_id)
     _clientUser = ClientUser.objects.get(user_id=_user.id)
-    context = {'line': _line, 'city': _city, 'company': _company, 'user': _user}
+    context = {'line': _line, 'city': _city, 'company': _company, 'user': _user, 'relation': _relation}
     if request.user.id != _user.id:
         return redirect('/main')    
     if _clientUser.isCity:
         return redirect('/main')
     if request.method == 'POST':
-        context = {'line': _line, 'has_error': False, 'name_error': False, 'city': _city, 'company': _company, 'return_trip_error': False, 'round_trip_error': False, 'special_round_trip_error': False, 'special_return_trip_error': False,}
+        context = {'line': _line, 'has_error': False, 'name_error': False, 'city': _city, 'company': _company, 'return_trip_error': False, 'round_trip_error': False, 'special_round_trip_error': False, 'special_return_trip_error': False, 'relation': _relation}
         name = request.POST['name']
         status = request.POST['status']
         try:
@@ -740,9 +744,52 @@ def set_busstops_view(request, relation_id):
     if _relation.company_id != _company.id:
         return redirect('/main')
     _city = City.objects.get(id=_relation.city_id)
-    context = {'paradas_error': False}
+    context = {'paradas_error': False, 'relation': _relation}
+    if request.method == 'POST':
+        try:
+            bus_stops = request.FILES['bus-stops']
+            try:
+                bus_stops = extractBusStops(bus_stops)
+                try:
+                    _bus_stop = BusStops.objects.get(relation_id=_relation.id)
+                    extractAndUpdate(_bus_stop.busStops, _relation.id)
+                except:
+                    _bus_stops = BusStops()
+                    _bus_stops.relation_id = _relation.id
+                    _bus_stops.busStops = bus_stops
+                    _bus_stops.save()
+
+            except:
+                context['special_round_trip_error'] = True
+                messages.add_message(request, messages.ERROR, 'El Recorrido Especial Ida no es una ruta')
+                context['has_error'] = True
+        except:
+            pass
     return render(request, 'set-busstops.html', context)
 
+@api_view(['GET'])
+def getCities(request):
+    _cities = City.objects.filter(status=True)
+    serializer = CitySerializer(_cities, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getAllStops(request):
+    _stops = BusStops.objects.all()
+    serializer = BusStopsSerializer(_stops, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getCityCompanies(request, city_id):
+    _relations = CompanyRelations.objects.filter(city_id=city_id)
+    serializer = CompanyRelationsSerializer(_relations, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getCityLines(request, city_id):
+    _lines = Line.objects.filter(city_id=city_id)     
+    serializer = LinesSerializer(_lines, many=True)
+    return Response(serializer.data)
 
 def home_view(request):
     closeSession(request)

@@ -59,3 +59,18 @@ def extractBusStops(kml_file):
         cacheList["zone"] = valueZona
         finalListPrint.append(cacheList)
     return finalListPrint
+
+def extractAndUpdate(bus_stops, relation_id):
+    from citymngmt.models import Line
+    _lines = Line.objects.filter(relation_id=relation_id)
+    for _line in _lines:
+        stop_list = []
+        for bus_stop in bus_stops:
+            lines = bus_stop["lines"].split("|")
+            for line in lines:
+                if line == _line.name:
+                    stop_list.append([bus_stop["lat"], bus_stop["lon"]])
+        _line.stops = stop_list
+        _line.save()
+
+        
