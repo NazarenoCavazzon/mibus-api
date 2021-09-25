@@ -791,6 +791,12 @@ def getCityLines(request, city_id):
     serializer = LinesSerializer(_lines, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def getCompany(request, company_id):
+    _company = Company.objects.get(id=company_id)  
+    serializer = CompanySerializer(_company)
+    return Response(serializer.data)
+
 def home_view(request):
     closeSession(request)
     return render(request, 'home-view.html')

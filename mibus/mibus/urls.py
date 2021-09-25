@@ -33,4 +33,5 @@ urlpatterns = [
     path('getAllStops', views.getAllStops),
     path('getCityCompanies/<int:city_id>', views.getCityCompanies),
     path('getCityLines/<int:city_id>', views.getCityLines),
+    path('getCompany/<int:company_id>', views.getCompany),
 ]
