@@ -169,6 +169,8 @@ def edit_city_view(request, id):
         if request.method == 'POST':
             name = request.POST['city_name']
             img_url = request.POST['img_url']
+            emergency_phone = request.POST['emergency_phone']
+            ticket_price = request.POST['ticket_price']
             try:
                 polygon = request.FILES['polygon']
                 try:
@@ -211,7 +213,9 @@ def edit_city_view(request, id):
             
             if context['has_error']:
                 return render(request, 'edit-city.html', context)
-                
+            
+            city.emergency_phone = emergency_phone
+            city.ticket_price = ticket_price
             city.name = name
             city.status = status
             city.image = img_url

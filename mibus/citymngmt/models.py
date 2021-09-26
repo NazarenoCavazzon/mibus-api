@@ -24,6 +24,8 @@ class CompanyRelations(models.Model):
 class City(models.Model):
     activated = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ticket_price = models.IntegerField(default=0)
+    emergency_phone = models.CharField(max_length=100, default="")
     name = models.TextField(max_length=50)
     polygon = models.JSONField(null=True)
     status = models.BooleanField(default=False)
