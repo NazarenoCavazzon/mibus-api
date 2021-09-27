@@ -1,12 +1,12 @@
 from django.http.response import HttpResponse
 from .forms import CreateUserForm
 from ipware import get_client_ip
+from validate_email import validate_email
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from citymngmt.models import City, Company, ClientUser, CompanyRelations, Line, CitySession, BusStops
-from validate_email import validate_email
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from .modules.extractors import extractLineRoute, extractBusStops, extractAndUpdate
@@ -370,9 +370,7 @@ def register_company_view(request):
             if User.objects.filter(email=email).exists():
                 context['has_error'] = True
                 messages.add_message(request, messages.ERROR, 'El email ya esta registrado')
-            if not validate_email(email):
-                messages.add_message(request, messages.ERROR, 'El email no es válido')
-                context['has_error'] = True
+
             if User.objects.filter(username=username).exists():
                 context['username_error'] = True
                 messages.add_message(request, messages.ERROR, 'El usuario ya existe')

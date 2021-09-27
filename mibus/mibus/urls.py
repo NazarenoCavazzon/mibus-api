@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.urls.conf import re_path
 import mibus.views as views
-from django_email_verification import urls as email_urls
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
 urlpatterns = [

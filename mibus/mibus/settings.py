@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-jls!b)1s%f%n0%e#!!_%f#khh^e)9emrp7uyv6ks4eufoyo^f$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["mibus-app.herokuapp.com", "127.0.0.1"]
 
 
 # Application definition
@@ -85,10 +85,12 @@ WSGI_APPLICATION = 'mibus.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mibus',
-        'USER': 'mibus',
-        'PASSWORD': 'Vicius438',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mibus_app',
+        'USER': 'Menem Lo Hizo',
+        'PASSWORD': 'vicius438',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
