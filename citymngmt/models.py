@@ -24,14 +24,14 @@ class CompanyRelations(models.Model):
         return str(self.company) + " - " + str(self.client)
 
 class City(models.Model):
-    activated = models.BooleanField(default=False, required=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, required=False)
-    ticket_price = models.IntegerField(default=0, required=False)
-    emergency_phone = models.CharField(max_length=100, default="", required=False)
-    name = models.TextField(max_length=50, required=False)
-    polygon = models.JSONField(null=True, required=False)
-    status = models.BooleanField(default=False, required=False)
-    image = models.TextField(default="", required=False)
+    activated = models.BooleanField(default=False, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    ticket_price = models.IntegerField(default=0, blank=True)
+    emergency_phone = models.CharField(max_length=100, default="", blank=True)
+    name = models.TextField(max_length=50, blank=True)
+    polygon = models.JSONField(null=True, blank=True)
+    status = models.BooleanField(default=False, blank=True)
+    image = models.TextField(default="", blank=True)
     def __str__(self):
         return str(self.user)
 
