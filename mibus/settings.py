@@ -87,11 +87,6 @@ WSGI_APPLICATION = 'mibus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbqelqbrd0ace6',
-        'USER': 'gyzktnehlmdeip',
-        'PASSWORD': 'f459c6d7a2fd85bfbc5ef2e138e32e471b135c92fd3836b8ceb2f1fbd7f2a486',
-        'HOST': 'ec2-23-20-208-173.compute-1.amazonaws.com',
-        'PORT': '5432',
     }
 }
 import dj_database_url
