@@ -1,4 +1,4 @@
-#!C:\Users\Menem Lo Hizo\Desktop\Scripts\Django\Mi BUS REST Api\Scripts\python.exe
+#!C:\Users\Menem Lo Hizo\Documents\GitHub\MiBus-Django-API\Scripts\python.exe
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 

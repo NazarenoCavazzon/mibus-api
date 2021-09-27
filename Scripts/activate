@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Menem Lo Hizo\Desktop\Scripts\Django\Mi BUS REST Api"
+VIRTUAL_ENV="C:\Users\Menem Lo Hizo\Documents\GitHub\MiBus-Django-API"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
@@ -54,7 +54,7 @@ fi
 
 if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
     _OLD_VIRTUAL_PS1="${PS1:-}"
-    PS1="(Mi BUS REST Api) ${PS1:-}"
+    PS1="(MiBus-Django-API) ${PS1:-}"
     export PS1
 fi
 
