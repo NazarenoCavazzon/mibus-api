@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-jls!b)1s%f%n0%e#!!_%f#khh^e)9emrp7uyv6ks4eufoyo^f$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["mibus-app.herokuapp.com", "127.0.0.1"]
+ALLOWED_HOSTS = ["mibus-app.herokuapp.com", "127.0.0.1", "mibus-app.com"]
 
 
 # Application definition
