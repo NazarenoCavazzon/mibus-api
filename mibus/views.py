@@ -2,7 +2,7 @@ from django.http.response import HttpResponse
 from .forms import CreateUserForm
 from ipware import get_client_ip
 from validate_email import validate_email
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -12,7 +12,9 @@ from django.contrib.auth import get_user_model
 from .modules.extractors import extractLineRoute, extractBusStops, extractAndUpdate
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import CitySerializer, BusStopsSerializer, CompanySerializer, CompanyRelationsSerializer, LinesSerializer
+from rest_framework import viewsets
+from .serializers import *
+import requests
 
 def closeSession(request):
     from ipware import get_client_ip
@@ -386,10 +388,14 @@ def register_company_view(request):
             
             form = CreateUserForm(request.POST)
             if form.is_valid():
-                form.save()
-                userIsCity = ClientUser(isCity=False, user_id=User.objects.get(username=username).id)      
-                userIsCity.save()
-                messages.add_message(request, messages.SUCCESS, 'Usuario creado exitosamente')
+                payload = {'username': 'mibus', 'password': 'vicius438'}
+                tokens = requests.post('http://127.0.0.1:8000/api/token', data=payload)
+                token = tokens.json()['access']
+                payload = {'username': username, 'password1': password,'password2':password2, 'email': email}
+                response = requests.post('http://127.0.0.1:8000/api/registerCompany/', data=payload, headers={'Authorization': 'Bearer ' + token})
+                if response.status_code == 200:
+                    messages.add_message(request, messages.SUCCESS, 'Usuario creado exitosamente')
+                
 
         return render(request, 'register-company.html', context)
 
@@ -769,8 +775,65 @@ def set_busstops_view(request, relation_id):
             pass
     return render(request, 'set-busstops.html', context)
 
-@api_view(['GET'])
-def getCities(request):
+class CitiesViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        queryset = City.objects.all()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = CitySerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self, request, *args, **kwargs):
+        params = kwargs
+        city = get_object_or_404(City, pk=params.get('pk'))
+        serializer = CitySerializer(city)
+        return Response(serializer.data)
+
+class BusStopsViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        queryset = BusStops.objects.all()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = get_list_or_404(BusStops, relation_id=kwargs.get('relation_id'))
+        serializer = BusStopsSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self, request, *args, **kwargs):
+        params = kwargs
+        stop = get_object_or_404(City, pk=params.get('pk'))
+        serializer = BusStopsSerializer(stop)
+        return Response(serializer.data)
+
+class RegisterCompanyViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *arg, **kwargs):
+        user_data = request.data
+        email = user_data.get('email')
+        username = user_data.get('username')
+        password1 = user_data.get('password1')
+        password2 = user_data.get('password2')  
+        user = CreateUserForm(request.data)
+        if user.is_valid():
+            user = User.objects.create_user(username=username, email=email, password=password1)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+@api_view(['POST'])
+def registerCity(request):
     _cities = City.objects.filter(status=True)
     serializer = CitySerializer(_cities, many=True)
     return Response(serializer.data)
