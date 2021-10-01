@@ -380,9 +380,6 @@ def register_company_view(request):
             if not username:
                 messages.add_message(request, messages.ERROR, 'El nombre de usuario no puede estar vacío')
                 context['has_error'] = True
-            if User.objects.filter(username=username).exists():
-                messages.add_message(request, messages.ERROR, 'El nombre de usuario ya existe')
-                context['has_error'] = True
             if context['has_error']:
                 return render(request, 'register.html', context)
             
@@ -395,6 +392,8 @@ def register_company_view(request):
                 response = requests.post('https://www.mibus-app.com.ar/api/registerCompany/', data=payload, headers={'Authorization': 'Bearer ' + token})
                 if response.status_code == 200:
                     messages.add_message(request, messages.SUCCESS, 'Usuario creado exitosamente')
+            else:
+                return render(request, 'register.html', context)
                 
 
         return render(request, 'register-company.html', context)
