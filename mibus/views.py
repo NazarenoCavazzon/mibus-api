@@ -829,6 +829,8 @@ class RegisterCompanyViewSet(viewsets.ModelViewSet):
         user = CreateUserForm(request.data)
         if user.is_valid():
             user = User.objects.create_user(username=username, email=email, password=password1)
+            userIsCity = ClientUser(isCity=False, user_id=User.objects.get(username=username).id)      
+            userIsCity.save()
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
