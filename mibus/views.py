@@ -389,10 +389,10 @@ def register_company_view(request):
             form = CreateUserForm(request.POST)
             if form.is_valid():
                 payload = {'username': 'mibus', 'password': 'vicius438'}
-                tokens = requests.post('http://127.0.0.1:8000/api/token', data=payload)
+                tokens = requests.post('https://www.mibus-app.com.ar/api/token', data=payload)
                 token = tokens.json()['access']
                 payload = {'username': username, 'password1': password,'password2':password2, 'email': email}
-                response = requests.post('http://127.0.0.1:8000/api/registerCompany/', data=payload, headers={'Authorization': 'Bearer ' + token})
+                response = requests.post('https://www.mibus-app.com.ar/api/registerCompany/', data=payload, headers={'Authorization': 'Bearer ' + token})
                 if response.status_code == 200:
                     messages.add_message(request, messages.SUCCESS, 'Usuario creado exitosamente')
                 
