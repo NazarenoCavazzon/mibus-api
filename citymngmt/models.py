@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import random
 # Create your models here.
 
 class ClientUser(models.Model):
@@ -31,7 +32,7 @@ class City(models.Model):
     name = models.TextField(max_length=50, blank=True)
     polygon = models.JSONField(null=True, blank=True)
     status = models.BooleanField(default=False, blank=True)
-    image = models.ImageField(blank=True)
+    image = models.ImageField(upload_to='city_images/', null=True, blank=True)
     municipality_image = models.ImageField(blank=True)
     def __str__(self):
         return str(self.user)
