@@ -170,9 +170,18 @@ def edit_city_view(request, id):
         context = {'city': city, 'name_error': False, 'has_error': False}
         if request.method == 'POST':
             name = request.POST['city_name']
-            img_url = request.POST['img_url']
             emergency_phone = request.POST['emergency_phone']
             ticket_price = request.POST['ticket_price']
+            try:
+                img_url = request.FILES['img_url']
+                city.image = img_url
+            except:
+                pass
+            try:
+                muni_url = request.FILES['muni_url']
+                city.municipality_image = muni_url
+            except:
+                pass
             try:
                 polygon = request.FILES['polygon']
                 try:
@@ -220,7 +229,6 @@ def edit_city_view(request, id):
             city.ticket_price = ticket_price
             city.name = name
             city.status = status
-            city.image = img_url
             city.save()
             messages.add_message(request, messages.SUCCESS, 'Ciudad editada exitosamente')
         return render(request, 'edit-city.html', context)
@@ -385,13 +393,10 @@ def register_company_view(request):
             
             form = CreateUserForm(request.POST)
             if form.is_valid():
-                payload = {'username': 'mibus', 'password': 'vicius438'}
-                tokens = requests.post('https://www.mibus-app.com.ar/api/token', data=payload)
-                token = tokens.json()['access']
-                payload = {'username': username, 'password1': password,'password2':password2, 'email': email}
-                response = requests.post('https://www.mibus-app.com.ar/api/registerCompany/', data=payload, headers={'Authorization': 'Bearer ' + token})
-                if response.status_code == 200:
-                    messages.add_message(request, messages.SUCCESS, 'Usuario creado exitosamente')
+                form.save()
+                userIsCity = ClientUser(isCity=False, user_id=User.objects.get(username=username).id)      
+                userIsCity.save()
+                messages.add_message(request, messages.SUCCESS, 'Usuario creado exitosamente')
             else:
                 return render(request, 'register.html', context)
                 
@@ -819,19 +824,7 @@ class RegisterCompanyViewSet(viewsets.ModelViewSet):
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def create(self, request, *arg, **kwargs):
-        user_data = request.data
-        email = user_data.get('email')
-        username = user_data.get('username')
-        password1 = user_data.get('password1')
-        password2 = user_data.get('password2')  
-        user = CreateUserForm(request.data)
-        if user.is_valid():
-            user = User.objects.create_user(username=username, email=email, password=password1)
-            userIsCity = ClientUser(isCity=False, user_id=User.objects.get(username=username).id)      
-            userIsCity.save()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
+
 
 @api_view(['POST'])
 def registerCity(request):

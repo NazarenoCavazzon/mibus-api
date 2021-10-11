@@ -1,10 +1,9 @@
 from django.contrib import admin
-from . import models
-# Register your models here.
-class CityAdmin(admin.AdminSite):
-    site_header = 'City Management'
+from .models import City, Company
 
-city_site = CityAdmin(name="CityAdmin")
-city_site.register(models.City)
+
+admin.site.site_header = 'MIBUS Management'
+admin.site.register(City)
+admin.site.register(Company)
 
 

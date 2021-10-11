@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.urls.conf import re_path
-from citymngmt.admin import city_site
 import mibus.views as views
 from .router import router
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
@@ -11,7 +10,7 @@ urlpatterns = [
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls, name='admin'),
-    path('admin/cities', city_site.urls, name='admin'),
+    #path('admin/cities', city_site.urls, name='admin-cities'),
     path('login', views.login_view, name='login'),
     path('register', views.register_view, name='register'),
     path('register/company', views.register_company_view, name='register_company'),

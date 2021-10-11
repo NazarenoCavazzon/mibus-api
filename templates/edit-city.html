@@ -105,11 +105,15 @@
             </div>
             <div>
                 <p>Precio del Boleto:</p>
-                <input type="number" name="ticket_price" value="{{city.ticket_price}}">
+                <input type="number" step="any" name="ticket_price" value="{{city.ticket_price}}">
             </div>
             <div>
-                <p>Url de la Imagen de la Ciudad</p>
-                <input type="text" name="img_url" value="{{city.image}}">
+                <p>Imagen de la Ciudad</p>
+                <input type="file" name="img_url" accept=".png;.jpg;.jpeg">
+            </div>
+            <div>
+                <p>Imagen de la Municipalidad</p>
+                <input type="file" name="muni_url" accept=".png;.jpg;.jpeg">
             </div>
             <div>
                 <p>Poligono de la Ciudad</p>
