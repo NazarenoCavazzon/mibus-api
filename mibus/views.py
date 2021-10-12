@@ -787,7 +787,7 @@ def set_busstops_view(request, relation_id):
 class CitiesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
-        queryset = City.objects.order_by('name')
+        queryset = City.objects.order_by('name').exclude(status=False)
         return queryset
 
     def list(self, request, *args, **kwargs):
