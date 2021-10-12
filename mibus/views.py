@@ -222,6 +222,11 @@ def edit_city_view(request, id):
                 context['has_error'] = True
                 context['name_error'] = True
             
+            if City.objects.filter(name=name).exclude(user_id=id).exists():
+                messages.add_message(request, messages.ERROR, 'Ya existe una ciudad con ese nombre')
+                context['has_error'] = True
+                context['name_error'] = True
+            
             if context['has_error']:
                 return render(request, 'edit-city.html', context)
             
@@ -782,7 +787,7 @@ def set_busstops_view(request, relation_id):
 class CitiesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
-        queryset = City.objects.all()
+        queryset = City.objects.order_by('name')
         return queryset
 
     def list(self, request, *args, **kwargs):
