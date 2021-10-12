@@ -3,6 +3,8 @@ from django.urls import path, include
 from django.urls.conf import re_path
 import mibus.views as views
 from .router import router
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
 urlpatterns = [
@@ -35,4 +37,4 @@ urlpatterns = [
     path('getCityCompanies/<int:city_id>', views.getCityCompanies),
     path('getCityLines/<int:city_id>', views.getCityLines),
     path('getCompany/<int:company_id>', views.getCompany),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
