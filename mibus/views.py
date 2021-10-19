@@ -779,7 +779,8 @@ def set_busstops_view(request, relation_id):
                     _bus_stops.relation_id = _relation.id
                     _bus_stops.busStops = bus_stops
                     _bus_stops.save()
-
+            except:
+                pass
         except:
             pass
     return render(request, 'set-busstops.html', context)
