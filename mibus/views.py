@@ -227,6 +227,10 @@ def edit_city_view(request, id):
                 context['has_error'] = True
                 context['name_error'] = True
             
+            if City.objects.get(user_id=id).image == None:
+                messages.add_message(request, messages.ERROR, 'Debe subir una imagen de la ciudad')
+                context['has_error'] = True
+
             if context['has_error']:
                 return render(request, 'edit-city.html', context)
             
@@ -776,10 +780,6 @@ def set_busstops_view(request, relation_id):
                     _bus_stops.busStops = bus_stops
                     _bus_stops.save()
 
-            except:
-                context['special_round_trip_error'] = True
-                messages.add_message(request, messages.ERROR, 'El Recorrido Especial Ida no es una ruta')
-                context['has_error'] = True
         except:
             pass
     return render(request, 'set-busstops.html', context)
