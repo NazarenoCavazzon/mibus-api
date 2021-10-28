@@ -363,7 +363,7 @@ def delete_company_view(request, relation_id):
 def register_company_view(request):
     closeSession(request)
     if request.user.is_authenticated:
-        return redirect('/main')
+        return redirect('/main')   
     else:
         form = CreateUserForm()
         context = {'has_error': False, 'form': form, 'data': request.POST, 'password_error': False, 'username_error': False}
@@ -434,7 +434,8 @@ def edit_company_view(request, id):
         if _clientUser.isCity:
             return redirect('/main')
         _company = Company.objects.get(user_id=id)
-        _line = Line.objects.filter(Company_id=_company.id)
+        _lines = Line.objects.filter(company_id=_company.id)
+        print(_lines)
         context = {'company': _company, 'user': _user,'name_error': False, 'has_error': False,}
         if request.method == 'POST':
             username = request.POST['username']
@@ -479,7 +480,9 @@ def edit_company_view(request, id):
                 user.set_password(password1)
             _company.username = username
             _company.color = color
-            _line.color = color
+            for line in _lines:
+                line.color = color
+                line.save()
             _user.email = email
             _user.save()        
             _company.save()
@@ -662,6 +665,7 @@ def add_lines_view(request, relation_id):
             if context['has_error']:
                 return render(request, 'add-line.html', context)
             _line.name = name
+            _line.company_id = _company.id
             _line.color = _company.color
             _line.save()
             messages.add_message(request, messages.SUCCESS, 'Ruta Agregada Exitosamente')

@@ -48,7 +48,7 @@ class Company(models.Model):
 class Line(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=True)
     relation = models.ForeignKey(CompanyRelations, on_delete=models.CASCADE, null=True)
-    Company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     color = models.TextField(default="#30b618")
     schedule = models.JSONField(null=True)
     name = models.TextField(max_length=50)
