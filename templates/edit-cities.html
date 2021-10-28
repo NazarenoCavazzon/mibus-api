@@ -12,6 +12,9 @@
     .main-1{
         width: 100%;
     }
+    .swal2-popup {
+        font-family: Helvetica;
+    }
     .button{
         background-color:#30b618;
         text-decoration: none;
@@ -104,22 +107,25 @@
                                 <td><p class="company-name">Ciudad {{ city.name }}</p></td>
                                 <td style="text-align: center;">
                                     <a href="verify/{{city.relation_id}}" class="company-edit">Ver Lineas</a>
-                                    <a href="editcompany/{{city.relation_id}}" class="company-edit" style="background-color:#b61827;" onclick="deleteCompany();">Eliminar</a>
+                                    <a class="company-edit" onclick="deleteCompany();" style="background-color:#b61827;" cursor="pointer;">Eliminar</a>
+                                    <input type="hidden" id="deleteCity" value="{{city.relation_id}}">
                                 </td>
                             </tr>                        
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <h1 style="margin: 10px 0px 10px 10px;">No hay Empresas</h1>
+                <h1 style="margin: 10px 0px 10px 10px;">No hay Ciudades</h1>
             {% endif %}
         </div>
     </div>
 </div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function Redirect() {
-               window.location = "/companies/delete/{{relation.id}}";
-            }
+        var value = document.getElementById("deleteCity").value;
+        window.location = "/companies/delete/"+value;
+    }
     function deleteCompany(){
         Swal.fire({
             title: '¿Estas Seguro?',

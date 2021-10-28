@@ -352,16 +352,12 @@ def delete_company_view(request, relation_id):
     _company = get_object_or_404(Company, id=_relation.company_id)
     _city = get_object_or_404(City, id=_relation.city_id)
     context = {'id': request.user.id}
-    if _city.user_id == request.user.id:
-        id = request.user.id
-        _clientUser = ClientUser.objects.get(user_id=id)
-        if not _clientUser.isCity:
-            return redirect('/main-company')
-        _relations = get_object_or_404(CompanyRelations, client_id=_clientUser.id, company_id=_company.id)    
-        _relations.delete() 
-        _lines = Line.objects.filter(company_id=_company.id, city_id=_city.id)
+    if _city.user_id == request.user.id or _company.user_id == request.user.id:
+        id = request.user.id 
+        _lines = Line.objects.filter(relation_id=relation_id)
         _lines.delete()
-        messages.add_message(request, messages.SUCCESS, 'Empresa Eliminada Exitosamente')
+        _relation.delete() 
+        messages.add_message(request, messages.SUCCESS, 'Relacion Eliminada Exitosamente')
         return render(request, 'company-deleted.html', context)
 
 def register_company_view(request):
@@ -438,6 +434,7 @@ def edit_company_view(request, id):
         if _clientUser.isCity:
             return redirect('/main')
         _company = Company.objects.get(user_id=id)
+        _line = Line.objects.filter(Company_id=_company.id)
         context = {'company': _company, 'user': _user,'name_error': False, 'has_error': False,}
         if request.method == 'POST':
             username = request.POST['username']
@@ -482,6 +479,7 @@ def edit_company_view(request, id):
                 user.set_password(password1)
             _company.username = username
             _company.color = color
+            _line.color = color
             _user.email = email
             _user.save()        
             _company.save()
@@ -664,6 +662,7 @@ def add_lines_view(request, relation_id):
             if context['has_error']:
                 return render(request, 'add-line.html', context)
             _line.name = name
+            _line.color = _company.color
             _line.save()
             messages.add_message(request, messages.SUCCESS, 'Ruta Agregada Exitosamente')
 
@@ -852,7 +851,7 @@ def getCityCompanies(request, city_id):
 
 @api_view(['GET'])
 def getCityLines(request, city_id):
-    _lines = Line.objects.filter(city_id=city_id)     
+    _lines = Line.objects.filter(city_id=city_id, status=True)
     serializer = LinesSerializer(_lines, many=True)
     return Response(serializer.data)
 
