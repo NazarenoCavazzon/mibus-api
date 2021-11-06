@@ -111,7 +111,8 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 id = request.user.id
-                _clientUser = ClientUser.objects.get(user_id=id)
+                _clientUser = ClientUser.objects.get(user_id=id)               
+
                 if not _clientUser.isCity:
                     try:
                         Company.objects.get(user_id=id)
@@ -144,7 +145,10 @@ def logout_view(request):
 def main_view(request):
     closeSession(request)
     id = request.user.id
-    _clientUser = ClientUser.objects.get(user_id=id)
+    try:
+        _clientUser = ClientUser.objects.get(user_id=id)
+    except:
+        return redirect('/admin')
     if not _clientUser.isCity:
         return redirect('/main-company')
     context= {'status': False, 'activated': False, 'user_id': 0}
@@ -359,6 +363,17 @@ def delete_company_view(request, relation_id):
         _relation.delete() 
         messages.add_message(request, messages.SUCCESS, 'Relacion Eliminada Exitosamente')
         return render(request, 'company-deleted.html', context)
+
+@login_required(login_url='/login')
+def delete_line_view(request, line_id):
+    _line = get_object_or_404(Line, id=line_id)
+    _relation = get_object_or_404(CompanyRelations, id=_line.relation_id)
+    _company = get_object_or_404(Company, id=_line.company_id)
+    context = {'relation_id': _relation.id}
+    if _company.user_id == request.user.id:
+        _line.delete()
+        messages.add_message(request, messages.SUCCESS, 'Linea Eliminada Exitosamente')
+        return render(request, 'line-deleted.html', context)
 
 def register_company_view(request):
     closeSession(request)
@@ -687,7 +702,7 @@ def edit_line_view(request, line_id):
     if _clientUser.isCity:
         return redirect('/main')
     if request.method == 'POST':
-        context = {'line': _line, 'has_error': False, 'name_error': False, 'city': _city, 'company': _company, 'return_trip_error': False, 'round_trip_error': False, 'special_round_trip_error': False, 'special_return_trip_error': False, 'relation': _relation}
+        context = {'line': _line, 'has_error': False, 'name_error': False, 'city': _city, 'company': _company, 'return_trip_error': False, 'round_trip_error': False, 'special_round_trip_error': False, 'special_return_trip_error': False,'stop_error': False, 'relation': _relation}
         name = request.POST['name']
         status = request.POST['status']
         try:
@@ -737,6 +752,17 @@ def edit_line_view(request, line_id):
                 context['has_error'] = True
         except:
             pass
+        
+        try:
+            bus_stops = request.FILES['bus_stops']
+            try:
+                extractBusStops(special_return_trip, _line.id)
+            except:
+                context['stop_error'] = True
+                messages.add_message(request, messages.ERROR, 'El archivo de paradas no es correcto')
+                context['has_error'] = True
+        except:
+            pass
 
         try:
             excel = request.FILES['excel']
@@ -757,36 +783,6 @@ def edit_line_view(request, line_id):
         messages.add_message(request, messages.SUCCESS, 'Ruta Editada Exitosamente')
     return render(request, 'edit-line.html', context)
 
-
-@login_required(login_url='/login')
-def set_busstops_view(request, relation_id):
-    _clientUser = ClientUser.objects.get(user_id=request.user.id)
-    if _clientUser.isCity:
-        return redirect('/main')
-    _relation = CompanyRelations.objects.get(id=relation_id)
-    _company = Company.objects.get(id=_relation.company_id)
-    if _relation.company_id != _company.id:
-        return redirect('/main')
-    _city = City.objects.get(id=_relation.city_id)
-    context = {'paradas_error': False, 'relation': _relation}
-    if request.method == 'POST':
-        try:
-            bus_stops = request.FILES['bus-stops']
-            try:
-                bus_stops = extractBusStops(bus_stops)
-                try:
-                    _bus_stop = BusStops.objects.get(relation_id=_relation.id)
-                    extractAndUpdate(_bus_stop.busStops, _relation.id)
-                except:
-                    _bus_stops = BusStops()
-                    _bus_stops.relation_id = _relation.id
-                    _bus_stops.busStops = bus_stops
-                    _bus_stops.save()
-            except:
-                pass
-        except:
-            pass
-    return render(request, 'set-busstops.html', context)
 
 class CitiesViewSet(viewsets.ModelViewSet):
 
@@ -855,7 +851,7 @@ def getCityCompanies(request, city_id):
 
 @api_view(['GET'])
 def getCityLines(request, city_id):
-    _lines = Line.objects.filter(city_id=city_id, status=True)
+    _lines = Line.objects.filter(city_id=city_id)
     serializer = LinesSerializer(_lines, many=True)
     return Response(serializer.data)
 

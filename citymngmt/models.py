@@ -50,10 +50,8 @@ class Line(models.Model):
     relation = models.ForeignKey(CompanyRelations, on_delete=models.CASCADE, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     color = models.TextField(default="#30b618")
-    schedule = models.JSONField(null=True)
     name = models.TextField(max_length=50)
     stops = models.JSONField(null=True)
-    zone_times = models.JSONField(null=True)
     round_trip = models.JSONField(null=True)
     return_trip = models.JSONField(null=True)
     special_round_trip = models.JSONField(null=True)
@@ -62,4 +60,10 @@ class Line(models.Model):
 
 class BusStops(models.Model):
     relation = models.ForeignKey(CompanyRelations, on_delete=models.CASCADE, null=True)
-    busStops = models.JSONField(null=True)
+    line = models.ForeignKey(Line, on_delete=models.CASCADE, null=True)
+    name = models.TextField(max_length=50, blank=True)
+    lat = models.FloatField(default=0)
+    lng = models.FloatField(default=0)
+    schedule = models.JSONField(null=True)
+    saturday_schedule = models.JSONField(null=True)
+    sunday_schedule = models.JSONField(null=True)

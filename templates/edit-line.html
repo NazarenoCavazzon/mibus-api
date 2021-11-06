@@ -234,10 +234,17 @@
                     <input type="file" name="special-return-trip" accept=".kml">
                 </div>
             {% endif %}
-            <div class="form">
-                <p>Horarios:</p>
-                <input type="file" name="excel" accept=".xslx">
-            </div>
+            {% if stop_error %}
+                <div class="form_error">
+                    <p>Paradas:</p>
+                    <input type="file" name="bus-stops" accept=".kml">
+                </div>
+            {% else %}
+                <div class="form">
+                    <p>Paradas:</p>
+                    <input type="file" name="bus-stops" accept=".kml">
+                </div>
+            {% endif %} 
                           
             {% for message in messages %}
                 {% if message.tags == 'error' %}

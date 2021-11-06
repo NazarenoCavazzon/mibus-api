@@ -9,6 +9,9 @@
         font-family: Helvetica;
         display: flex;
     }
+    .swal2-popup {
+        font-family: Helvetica;
+    }
     .main-1{
         width: 70%;
     }
@@ -103,7 +106,11 @@
                         {% for line in lines %}
                             <tr>                            
                                 <td><p class="company-name">Linea {{ line.name }}</p></td>
-                                <td style="text-align: center;"><a href="/editline/{{line.id}}" class="company-edit">Editar</a></td>
+                                <td style="text-align: center;">
+                                    <a href="/editline/{{line.id}}" class="company-edit">Editar</a>
+                                    <a class="company-edit" onclick="deleteCompany();" style="background-color:#b61827;" cursor="pointer;">Eliminar</a>
+                                    <input type="hidden" id="deleteCity" value="{{line.id}}">
+                                </td>
                             </tr>                        
                         {% endfor %}
                     </tbody>
@@ -127,16 +134,33 @@
                 </div>
             </div>
         </div>
-        <div style="padding-top: 15px">
-            <div class="add-company-container">
-                <div>
-                    <h1>Configurar Paradas:</h1>
-                </div>
-                <div>
-                    <a href="/setbusstops/{{relation.id}}" class="button">Configurar</a>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function Redirect() {
+        var value = document.getElementById("deleteCity").value;
+        window.location = "/line/delete/"+value;
+    }
+    function deleteCompany(){
+        Swal.fire({
+            title: '¿Estas Seguro?',
+            text: "¡Los cambios no son reversibles!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, Eliminar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                '¡Eliminado!',
+                'La empresa fue eliminada.',
+                'success'
+                ).then(Redirect);
+            }
+            })
+    }
+</script>
 {% endblock content %}

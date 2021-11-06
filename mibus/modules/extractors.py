@@ -25,7 +25,7 @@ def extractLineRoute(kml_file):
             counter = 0
     return finalList
 
-def extractBusStops(kml_file):
+def extractBusStops(kml_file, bus_stops):
     from bs4 import BeautifulSoup as bs
     finalList = []
     finalListPrint = []
