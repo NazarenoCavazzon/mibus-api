@@ -88,11 +88,11 @@ WSGI_APPLICATION = 'mibus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mibus_app',
-        'USER': 'postgres',
+        'NAME': 'mibus',
+        'USER': 'menem',
         'HOST': 'localhost',
         'PORT': '',
-        'PASSWORD': 'vicius438'
+        'PASSWORD': 'messielmejor'
     }
 }
 
