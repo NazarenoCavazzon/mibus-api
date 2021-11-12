@@ -111,7 +111,10 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 id = request.user.id
-                _clientUser = ClientUser.objects.get(user_id=id)               
+                try:
+                    _clientUser = ClientUser.objects.get(user_id=id)
+                except:
+                    return redirect('/admin')
 
                 if not _clientUser.isCity:
                     try:
