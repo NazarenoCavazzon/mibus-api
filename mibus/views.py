@@ -371,7 +371,7 @@ def delete_company_view(request, relation_id):
 def delete_line_view(request, line_id):
     _line = get_object_or_404(Line, id=line_id)
     _relation = get_object_or_404(CompanyRelations, id=_line.relation_id)
-    _company = get_object_or_404(Company, id=_line.company_id)
+    _company = get_object_or_404(Company, id=_relation.company_id)
     context = {'relation_id': _relation.id}
     if _company.user_id == request.user.id:
         _line.delete()
