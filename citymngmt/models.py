@@ -31,6 +31,7 @@ class City(models.Model):
     emergency_phone = models.CharField(max_length=100, default="", blank=True)
     name = models.TextField(max_length=50, blank=True)
     polygon = models.JSONField(null=True, blank=True)
+    position = models.JSONField(null=True, blank=True)
     status = models.BooleanField(default=False, blank=True)
     image = models.ImageField(upload_to='city_images/', null=True, blank=True)
     municipality_image = models.ImageField(blank=True)
