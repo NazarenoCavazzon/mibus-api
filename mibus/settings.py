@@ -32,7 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ["127.0.0.1", "mibus-app.com.ar", "www.mibus-app.com.ar"]
+ALLOWED_HOSTS = ["127.0.0.1", "mibus-app.com.ar", "www.mibus-app.com.ar", "10.0.2.2"]
 
 
 # Application definition
@@ -89,10 +89,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'mibus',
-        'USER': 'menem',
+        'USER': 'postgres',
         'HOST': 'localhost',
         'PORT': '',
-        'PASSWORD': 'messielmejor'
+        'PASSWORD': 'vicius438'
     }
 }
 

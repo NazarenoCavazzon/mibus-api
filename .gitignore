@@ -1,1 +1,3 @@
 .media
+./citymngmnt/migrations/
+*.pyc

@@ -596,7 +596,6 @@ def edit_cities_lines_view(request, relation_id):
         if _clientUser.isCity:
             return redirect('/main')
         _company = Company.objects.get(user_id=id)
-        _relations = CompanyRelations.objects.filter(company_id=_company.id)
         _lines = Line.objects.filter(relation_id=_relation.id)
         context = {'company': _company, 'city':_city, 'user': _user,'lines': _lines, 'has_lines': False, 'relation': _relation}
         if len(_lines) > 0:
@@ -756,21 +755,16 @@ def edit_line_view(request, line_id):
         except:
             pass
         
-        try:
-            bus_stops = request.FILES['bus_stops']
-            try:
-                extractBusStops(special_return_trip, _line.id)
-            except:
-                context['stop_error'] = True
-                messages.add_message(request, messages.ERROR, 'El archivo de paradas no es correcto')
-                context['has_error'] = True
-        except:
-            pass
 
-        try:
-            excel = request.FILES['excel']
-        except:
-            pass
+        bus_stops = request.FILES['bus-stops']
+
+        extractBusStops(bus_stops)
+
+        context['stop_error'] = True
+        messages.add_message(request, messages.ERROR, 'El archivo de paradas no es correcto')
+        context['has_error'] = True
+
+
         if name == '':
             context['name_error'] = True
             messages.add_message(request, messages.ERROR, 'El nombre no puede estar vacío')
@@ -781,6 +775,7 @@ def edit_line_view(request, line_id):
             _line.status = False
         if context['has_error']:
             return render(request, 'add-line.html', context)
+        print(request)
         _line.name = name
         _line.save()
         messages.add_message(request, messages.SUCCESS, 'Ruta Editada Exitosamente')
