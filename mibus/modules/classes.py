@@ -1,8 +1,8 @@
 class busStopClass():
-    def __init__(self, name, x, y, subtitle, direction, order_number, schedule_data):
+    def __init__(self, name, lat, lon, subtitle, direction, order_number, schedule_data):
         self.name = name
-        self.x = x
-        self.y = y
+        self.lat = lat
+        self.lon = lon
         self.subtitle = subtitle
         self.direction = direction
         self.order_number = order_number

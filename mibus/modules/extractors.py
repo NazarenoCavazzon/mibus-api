@@ -46,7 +46,27 @@ def add_in_order(stop_list, stop):
     stop_list[pos:pos] = [stop]
     return stop_list
 
-def extractBusStops(kml_file):
+def time_to_hours(time):
+    import datetime
+    time = str(datetime.timedelta(seconds=time+17))
+    return time.split('.')[0]
+
+def time_to_seconds(time):
+    import datetime
+    date_time = datetime.datetime.strptime(str(time), "%H:%M:%S")
+    a_timedelta = date_time - datetime.datetime(1900, 1, 1)
+    seconds = a_timedelta.total_seconds()
+    return seconds
+
+def time_to_seconds_start(time):
+    import datetime
+    date_time = datetime.datetime.strptime(str(time), "%H:%M")
+    a_timedelta = date_time - datetime.datetime(1900, 1, 1)
+    seconds = a_timedelta.total_seconds()
+    return seconds
+
+def extractBusStops(kml_file, relation_id, line_id):
+    from citymngmt.models import BusStop
     import math
     import openrouteservice
     from bs4 import BeautifulSoup as bs
@@ -65,27 +85,68 @@ def extractBusStops(kml_file):
     for element in elements:
         name = element.find("name").text
         coordinates = element.find("coordinates").text
-        x = coordinates.split(",")[0].strip()
-        y = coordinates.split(",")[1].strip()
+        lon = coordinates.split(",")[0].strip()
+        lat = coordinates.split(",")[1].strip()
         extendeddata = element.find("extendeddata")
         subtitle = extendeddata.find("value").text
         direction = extendeddata.find("value").find_next('value').text
         order_number = int(extendeddata.find("value").find_next('value').find_next('value').text)
-        schedule_data = extendeddata.find("value").find_next('value').find_next('value').find_next('value').text
+        schedule_data = extendeddata.find("value").find_next('value').find_next('value').find_next('value').text.split('|')
         if direction == "Ida":
-            stop = busStopClass(name, x, y, subtitle, direction, order_number, schedule_data)
+            stop = busStopClass(name, lat, lon, subtitle, direction, order_number, schedule_data)
             add_in_order(round_stops,stop)
         else:
-            stop = busStopClass(name, x, y, subtitle, direction, order_number, schedule_data)
+            stop = busStopClass(name, lat, lon, subtitle, direction, order_number, schedule_data)
             add_in_order(return_stops,stop)
 
-    for stop in return_stops:
-        print(stop.order_number)
-    schedule = []
-    lastStop = []
+    lastStop = None
     counter = 0
 
-    return print(round_stops)
+    for stop in round_stops:
+        if counter == len(client_list):
+            counter = 0
+        if stop.schedule_data[0] != '':
+            lastStop = stop
+            for i in range(len(stop.schedule_data)):
+                stop.schedule_data[i] = time_to_hours(time_to_seconds_start(stop.schedule_data[i]))
+        else:
+            coords = ((lastStop.lon, lastStop.lat),(stop.lon, stop.lat))
+            res = client_list[counter].directions(coords)
+            duration = res['routes'][0]['summary']['duration']
+            for schedule in lastStop.schedule_data:
+                seconds = time_to_seconds(schedule)
+                seconds += duration
+                stop.schedule_data.append(time_to_hours(seconds))
+            stop.schedule_data.remove('')
+            lastStop = stop
+        counter += 1
+    
+    for stop in return_stops:
+        if counter == len(client_list):
+            counter = 0
+        if stop.schedule_data[0] != '':
+            lastStop = stop
+            for i in range(len(stop.schedule_data)):
+                stop.schedule_data[i] = time_to_hours(time_to_seconds_start(stop.schedule_data[i]))
+        else:
+            coords = ((lastStop.lon, lastStop.lat),(stop.lon, stop.lat))
+            res = client_list[counter].directions(coords)
+            duration = res['routes'][0]['summary']['duration']
+            for schedule in lastStop.schedule_data:
+                seconds = time_to_seconds(schedule)
+                seconds += duration
+                stop.schedule_data.append(time_to_hours(seconds))
+            stop.schedule_data.remove('')
+            lastStop = stop
+        counter += 1         
+    
+    all_stops = round_stops + return_stops
+
+    BusStop.objects.filter(line_id=line_id).delete()
+
+    BusStop.objects.bulk_create(
+        BusStop(relation_id=relation_id, line_id=line_id, name=stop.name, lat=stop.lat, lon=stop.lon, subtitle=stop.subtitle, direction=stop.direction, order_number=stop.order_number, schedule=stop.schedule_data) for stop in all_stops
+        )
 
 def extractAndUpdate(bus_stops, relation_id):
     from citymngmt.models import Line

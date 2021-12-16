@@ -59,12 +59,15 @@ class Line(models.Model):
     special_return_trip = models.JSONField(null=True)
     status = models.BooleanField(default=False)
 
-class BusStops(models.Model):
+class BusStop(models.Model):
     relation = models.ForeignKey(CompanyRelations, on_delete=models.CASCADE, null=True)
     line = models.ForeignKey(Line, on_delete=models.CASCADE, null=True)
     name = models.TextField(max_length=50, blank=True)
     lat = models.FloatField(default=0)
-    lng = models.FloatField(default=0)
+    lon = models.FloatField(default=0)
+    subtitle = models.TextField(max_length=50, blank=True)
+    direction = models.TextField(max_length=10, blank=True)
+    order_number = models.IntegerField(default=0)
     schedule = models.JSONField(null=True)
     saturday_schedule = models.JSONField(null=True)
     sunday_schedule = models.JSONField(null=True)

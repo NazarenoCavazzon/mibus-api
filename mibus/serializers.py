@@ -7,9 +7,9 @@ class CitySerializer(serializers.ModelSerializer):
         model = cityModels.City
         fields = '__all__'
 
-class BusStopsSerializer(serializers.ModelSerializer):
+class BusStopSerializer(serializers.ModelSerializer):
     class Meta:
-        model = cityModels.BusStops
+        model = cityModels.BusStop
         fields = '__all__'
 
 class CompanyRelationsSerializer(serializers.ModelSerializer):

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from citymngmt.models import City, Company, ClientUser, CompanyRelations, Line, CitySession, BusStops
+from citymngmt.models import City, Company, ClientUser, CompanyRelations, Line, CitySession, BusStop
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from .modules.extractors import extractLineRoute, extractBusStops, extractAndUpdate
@@ -755,14 +755,16 @@ def edit_line_view(request, line_id):
         except:
             pass
         
-
-        bus_stops = request.FILES['bus-stops']
-
-        extractBusStops(bus_stops)
-
-        context['stop_error'] = True
-        messages.add_message(request, messages.ERROR, 'El archivo de paradas no es correcto')
-        context['has_error'] = True
+        try:
+            bus_stops = request.FILES['bus-stops']
+            try:
+                extractBusStops(bus_stops, _relation.id, _line.id)
+            except:
+                context['stop_error'] = True
+                messages.add_message(request, messages.ERROR, 'El archivo de paradas no es correcto')
+                context['has_error'] = True
+        except:
+            pass
 
 
         if name == '':
@@ -799,21 +801,23 @@ class CitiesViewSet(viewsets.ModelViewSet):
         serializer = CitySerializer(city)
         return Response(serializer.data)
 
-class BusStopsViewSet(viewsets.ModelViewSet):
+class BusStopViewSet(viewsets.ModelViewSet):
+
+    serializer_class = BusStopSerializer
 
     def get_queryset(self):
-        queryset = BusStops.objects.all()
+        queryset = BusStop.objects.all()
         return queryset
 
     def list(self, request, *args, **kwargs):
-        queryset = get_list_or_404(BusStops, relation_id=kwargs.get('relation_id'))
-        serializer = BusStopsSerializer(queryset, many=True)
+        queryset = self.get_queryset()
+        serializer = BusStopSerializer(queryset, many=True)
         return Response(serializer.data)
     
     def retrieve(self, request, *args, **kwargs):
         params = kwargs
-        stop = get_object_or_404(City, pk=params.get('pk'))
-        serializer = BusStopsSerializer(stop)
+        stops = BusStop.objects.filter(line_id=params.get('pk'))
+        serializer = BusStopSerializer(stops, many=True)
         return Response(serializer.data)
 
 class RegisterCompanyViewSet(viewsets.ModelViewSet):
@@ -829,6 +833,7 @@ class RegisterCompanyViewSet(viewsets.ModelViewSet):
 
 
 
+
 @api_view(['POST'])
 def registerCity(request):
     _cities = City.objects.filter(status=True)
@@ -837,8 +842,8 @@ def registerCity(request):
 
 @api_view(['GET'])
 def getAllStops(request):
-    _stops = BusStops.objects.all()
-    serializer = BusStopsSerializer(_stops, many=True)
+    _stops = BusStop.objects.all()
+    serializer = BusStopSerializer(_stops, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
